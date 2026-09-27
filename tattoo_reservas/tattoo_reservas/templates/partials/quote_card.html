@@ -1,0 +1,12 @@
+{# Tarjeta resumida de un presupuesto: recibe `quote` (QuoteRequest) #}
+<a class="q-card" href="{{ url_for('admin.admin_quote_detail', id=quote.id) }}">
+    <div class="q-card-top">
+        <strong>#{{ quote.id }} · {{ quote.nombre }}</strong>
+        <span class="badge {{ quote.status }}">{{ quote.status }}</span>
+    </div>
+    <p class="q-card-meta">
+        {{ quote.size }} · {{ quote.zone }} ·
+        {% if quote.estimated_price %}≈ $ {{ '{:,.0f}'.format(quote.estimated_price) }}{% else %}—{% endif %}
+    </p>
+    <p class="q-card-date">{{ quote.created_at.strftime('%d/%m/%Y %H:%M') if quote.created_at else '' }}</p>
+</a>

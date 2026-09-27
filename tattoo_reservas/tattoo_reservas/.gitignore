@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.egg-info/
+
+# Entorno y secretos
+.env
+
+# Runtime local: base de datos e imágenes subidas
+instance/
+uploads/

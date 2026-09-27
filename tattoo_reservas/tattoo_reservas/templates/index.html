@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Ink.Studio — Tatuajes con alma{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="hero-eyebrow">✦ Estudio de tatuajes independiente</p>
+    <h1>Tinta que cuenta<br><em>tu historia</em></h1>
+    <p>Diseños personalizados, higiene profesional y un proceso pensado
+       para que tu único problema sea elegir la idea.</p>
+    <div class="hero-ctas">
+        <a class="btn" href="{{ url_for('public.presupuesto') }}">Calcular presupuesto</a>
+        <a class="btn-ghost" href="{{ url_for('public.portfolio') }}">Ver portfolio</a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature">
+        <div class="feature-icon">✦</div>
+        <h3>Presupuesto al instante</h3>
+        <p>Estimá el valor de tu tatuaje por tamaño y zona antes de escribirnos.
+           Sin vueltas, sin sorpresas.</p>
+    </div>
+    <div class="feature">
+        <div class="feature-icon">✦</div>
+        <h3>Diseño a medida</h3>
+        <p>Cada pieza se diseña para tu cuerpo y tu historia. Mostranos tus
+           referencias y armamos algo único.</p>
+    </div>
+    <div class="feature">
+        <div class="feature-icon">✦</div>
+        <h3>Turnos confirmados</h3>
+        <p>Reservás desde la web y te confirmamos por WhatsApp. Tu turno queda
+           asentado en la agenda del estudio.</p>
+    </div>
+</section>
+
+{% if destacados %}
+<section class="home-portfolio">
+    <h2>Trabajos recientes</h2>
+    <p>Una muestra de lo último que salió del estudio.</p>
+    {% with fotos = destacados %}{% include 'partials/portfolio_grid.html' %}{% endwith %}
+    <a class="more" href="{{ url_for('public.portfolio') }}">Ver portfolio completo →</a>
+</section>
+{% endif %}
+
+<section class="cta-band">
+    <h2>¿Listo para tu próximo tatuaje?</h2>
+    <p>Estimá el precio en 30 segundos o reservá tu turno directamente.</p>
+    <div class="hero-ctas">
+        <a class="btn" href="{{ url_for('public.reservar') }}">Reservar turno</a>
+        <a class="btn-ghost" href="{{ url_for('public.presupuesto') }}">Calcular presupuesto</a>
+    </div>
+</section>
+{% endblock %}

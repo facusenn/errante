@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Presupuesto #{{ quote.id }} — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="page-body" style="max-width:720px;">
+    <div class="page-hero" style="padding-top:2.5rem;padding-bottom:0;">
+        <h1 style="font-size:2.2rem;">Presupuesto #{{ quote.id }}</h1>
+        <p>Guardamos tu solicitud. Guardá este número para consultas.</p>
+    </div>
+
+    <div style="display:flex;justify-content:center;margin:1.5rem 0 2rem;">
+        <span class="badge {{ quote.status }}">{{ quote.status }}</span>
+    </div>
+
+    <div class="detail-box">
+        <h2>El estimado</h2>
+        {% if calc %}
+        <dl class="detail-grid">
+            <div class="full-width">
+                <dt>Rango estimado</dt>
+                <dd class="estimate-range">$ {{ '{:,.0f}'.format(calc.range_low) }} – $ {{ '{:,.0f}'.format(calc.range_high) }}</dd>
+            </div>
+        </dl>
+        {% elif quote.estimated_price %}
+        <dl class="detail-grid">
+            <div class="full-width">
+                <dt>Estimado</dt>
+                <dd class="estimate-range">$ {{ '{:,.0f}'.format(quote.estimated_price) }}</dd>
+            </div>
+        </dl>
+        {% else %}
+        <p class="status-note" style="margin:0;">No pudimos calcular un estimado con estos datos —
+           te lo definimos a mano cuando lo revisemos.</p>
+        {% endif %}
+        <p class="q-estimate-disclaimer" style="border:none;padding:0;margin-top:1rem;">
+            * El valor final se confirma con el tatuador según detalle del diseño,
+              cobertura y sesiones necesarias.
+        </p>
+    </div>
+
+    <div class="detail-box">
+        <h2>Tus datos y tu idea</h2>
+        <dl class="detail-grid">
+            <div><dt>Nombre</dt><dd>{{ quote.nombre }}</dd></div>
+            <div><dt>Teléfono</dt><dd>{{ quote.telefono }}</dd></div>
+            <div><dt>Tamaño</dt><dd>{{ quote.size }}</dd></div>
+            <div><dt>Zona</dt><dd>{{ quote.zone }}</dd></div>
+            {% if quote.description %}
+            <div class="full-width"><dt>Tu idea</dt><dd>{{ quote.description }}</dd></div>
+            {% endif %}
+            {% if quote.images %}
+            <div class="full-width">
+                <dt>Referencias</dt>
+                <dd>
+                    <div class="thumb-row">
+                        {% for img in quote.images %}
+                        <a href="{{ url_for('public.serve_upload', filename=img.filename) }}" target="_blank" rel="noopener">
+                            <img loading="lazy" width="110" height="110" style="width:110px;height:110px;object-fit:cover;"
+                                 src="{{ url_for('public.serve_upload', filename=img.filename) }}"
+                                 alt="{{ img.original_filename or 'Referencia' }}">
+                        </a>
+                        {% endfor %}
+                    </div>
+                </dd>
+            </div>
+            {% endif %}
+        </dl>
+    </div>
+
+    {% if quote.status == 'pendiente' %}
+    <p class="status-note">En revisión: el tatuador va a mirar tu idea y te contacta por WhatsApp
+       o email con el precio final.</p>
+
+    {% elif quote.status == 'aprobado' %}
+    <p class="status-note">✓ ¡Presupuesto aprobado! Ya podés elegir fecha y hora — tus datos ya
+       quedaron cargados.</p>
+    <div style="text-align:center;margin-bottom:3rem;">
+        <a class="btn" href="{{ url_for('public.reservar', quote_id=quote.id) }}">Agendar mi turno</a>
+    </div>
+
+    {% elif quote.status == 'agendado' %}
+    <p class="status-note">✓ Ya hay un turno agendado con este presupuesto. Para cambiar la fecha,
+       escribinos por WhatsApp.</p>
+
+    {% elif quote.status == 'rechazado' %}
+    <p class="status-note">Este presupuesto no sigue adelante. Si creés que hubo un error,
+       escribinos y lo vemos de nuevo.</p>
+    {% endif %}
+
+    <div style="text-align:center;">
+        <a class="btn-ghost" href="{{ url_for('public.index') }}">Volver al inicio</a>
+    </div>
+</div>
+{% endblock %}

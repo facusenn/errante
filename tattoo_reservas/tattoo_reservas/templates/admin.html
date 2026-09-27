@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Admin — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-head">
+        <div>
+            <h1>Panel de turnos</h1>
+            <p class="sub">Reservas, presupuestos y configuración del estudio.</p>
+        </div>
+        <div class="toolbar">
+            <a href="{{ url_for('admin.admin_portfolio') }}">Portfolio</a>
+            <a href="{{ url_for('admin.admin_quotes') }}">Presupuestos</a>
+            <a href="{{ url_for('admin.admin_estimator') }}">Precios</a>
+            <a href="{{ url_for('admin.exportar_excel') }}">Excel ⬇</a>
+            <form method="POST" action="{{ url_for('admin.logout') }}">
+                <button type="submit">Salir</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="integration-chips">
+        <span class="chip {{ 'on' if integrations.whatsapp else 'off' }}">
+            WhatsApp {{ 'activo' if integrations.whatsapp else 'no configurado (wa.me)' }}
+        </span>
+        <span class="chip {{ 'on' if integrations.calendar else 'off' }}">
+            Google Calendar {{ 'activo' if integrations.calendar else 'no configurado' }}
+        </span>
+        <span class="chip {{ 'off' if not integrations.whatsapp and not integrations.calendar else 'on' }}">
+            Envíos al confirmar: {{ 'automáticos' if (integrations.whatsapp or integrations.calendar) else 'manual' }}
+        </span>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="num">{{ stats.total }}</div><div class="lbl">Turnos</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--warn);">{{ stats.pendientes }}</div><div class="lbl">Pendientes</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--ok);">{{ stats.confirmados }}</div><div class="lbl">Confirmados</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--muted);">{{ stats.cancelados }}</div><div class="lbl">Cancelados</div></div>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card"><div class="num">{{ stats.quotes_total }}</div><div class="lbl">Presupuestos <a href="{{ url_for('admin.admin_quotes') }}" style="font-size:0.65rem;color:var(--red);text-decoration:underline;">ver →</a></div></div>
+        <div class="stat-card"><div class="num" style="color:var(--warn);">{{ stats.quotes_pendientes }}</div><div class="lbl">Por revisar</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--ok);">{{ stats.quotes_aprobadas }}</div><div class="lbl">Aprobados</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--warm);">{{ stats.quotes_agendadas }}</div><div class="lbl">Agendados</div></div>
+    </div>
+
+    <div class="filter-pills">
+        {% for estado, ruta in [('todos', None), ('pendiente', 'pendiente'), ('confirmado', 'confirmado'), ('cancelado', 'cancelado')] %}
+        <a href="{{ url_for('admin.dashboard', estado=ruta if ruta else none) }}"
+           class="{{ 'active' if estado_filtro == (ruta or 'todos') }}">
+            {{ (ruta or 'Todos')|capitalize }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="admin-table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Turno</th>
+                    <th>Tatuaje</th>
+                    <th>Estado</th>
+                    <th>Integraciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reservas %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td class="client">
+                        <strong>{{ r.nombre }}</strong>
+                        <span>{{ r.email }} · {{ r.telefono }}</span>
+                    </td>
+                    <td>
+                        <strong>{{ r.fecha.strftime('%d/%m/%Y') }}</strong> · {{ r.hora }}
+                        {% if r.quote_id %}<span class="integration-glyph">Presup. #{{ r.quote_id }}</span>{% endif %}
+                    </td>
+                    <td>
+                        {{ r.estilo }} · {{ r.zona }}<br>
+                        <span class="integration-glyph">{{ r.tamano }}</span>
+                    </td>
+                    <td><span class="badge {{ r.estado }}">{{ r.estado }}</span></td>
+                    <td>
+                        {% if r.whatsapp_status == 'enviado' %}
+                            <span class="integration-glyph ok">✓ WhatsApp enviado</span>
+                        {% elif r.whatsapp_status == 'wa_me' %}
+                            <span class="integration-glyph">WhatsApp: link wa.me</span>
+                        {% elif r.whatsapp_status == 'error' %}
+                            <span class="integration-glyph err">✗ WhatsApp falló</span>
+                        {% endif %}
+                        {% if r.calendar_status == 'sincronizado' %}
+                            <span class="integration-glyph ok">✓ En Google Calendar</span>
+                        {% elif r.calendar_status == 'conflicto' %}
+                            <span class="integration-glyph warn">⚠ Horario ocupado en Calendar</span>
+                        {% elif r.calendar_status == 'error' %}
+                            <span class="integration-glyph err">✗ Sync Calendar falló</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            <form method="POST" action="{{ url_for('admin.cambiar_estado', id=r.id) }}">
+                                <input type="hidden" name="estado" value="confirmado">
+                                <button class="btn-small" type="submit"
+                                        {% if r.estado == 'confirmado' %}disabled style="opacity:0.4;cursor:default;"{% endif %}>Confirmar</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.cambiar_estado', id=r.id) }}">
+                                <input type="hidden" name="estado" value="pendiente">
+                                <button class="btn-small" type="submit"
+                                        {% if r.estado == 'pendiente' %}disabled style="opacity:0.4;cursor:default;"{% endif %}>Pendiente</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.cambiar_estado', id=r.id) }}">
+                                <input type="hidden" name="estado" value="cancelado">
+                                <button class="btn-small" type="submit"
+                                        {% if r.estado == 'cancelado' %}disabled style="opacity:0.4;cursor:default;"{% endif %}>Cancelar</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.eliminar_reserva', id=r.id) }}"
+                                  onsubmit="return confirm('¿Eliminar la reserva #{{ r.id }} de {{ r.nombre }}?');">
+                                <button class="btn-small del" type="submit">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="table-empty">No hay reservas con este filtro todavía.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

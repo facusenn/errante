@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Reserva enviada — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="page-body">
+    <div class="page-hero" style="padding-top:2.5rem;padding-bottom:0;">
+        <h1 style="font-size:2.2rem;">¡Reserva enviada! 🖤</h1>
+        <p>Número de turno: <strong>#{{ reserva.id }}</strong></p>
+    </div>
+
+    <div class="detail-box">
+        <h2>Tu reserva</h2>
+        <dl class="detail-grid">
+            <div><dt>Nombre</dt><dd>{{ reserva.nombre }}</dd></div>
+            <div><dt>Email</dt><dd>{{ reserva.email }}</dd></div>
+            <div><dt>Teléfono</dt><dd>{{ reserva.telefono }}</dd></div>
+            <div><dt>Estado</dt><dd><span class="badge {{ reserva.estado }}">{{ reserva.estado }}</span></dd></div>
+            <div><dt>Fecha</dt><dd>{{ reserva.fecha.strftime('%d/%m/%Y') }}</dd></div>
+            <div><dt>Horario</dt><dd>{{ reserva.hora }}</dd></div>
+            <div><dt>Estilo</dt><dd>{{ reserva.estilo }}</dd></div>
+            <div><dt>Zona</dt><dd>{{ reserva.zona }}</dd></div>
+            <div><dt>Tamaño</dt><dd>{{ reserva.tamano }}</dd></div>
+            <div><dt>Primera vez</dt><dd>{{ 'Sí' if reserva.es_primera_vez else 'No' }}</dd></div>
+            {% if reserva.quote_id %}
+            <div><dt>Presupuesto</dt><dd>#{{ reserva.quote_id }}</dd></div>
+            {% endif %}
+            {% if reserva.descripcion %}
+            <div class="full-width"><dt>Tu idea</dt><dd>{{ reserva.descripcion }}</dd></div>
+            {% endif %}
+        </dl>
+    </div>
+
+    <p class="status-note">Quedó <strong>pendiente de confirmación</strong>: el estudio te va a
+       escribir para confirmar el turno. Si querés adelantar el paso, escribinos por WhatsApp.</p>
+
+    {% if wa_link %}
+    <div style="text-align:center;margin-bottom:2.5rem;">
+        <a class="btn" href="{{ wa_link }}" target="_blank" rel="noopener">Confirmar por WhatsApp</a>
+    </div>
+    {% endif %}
+
+    <div style="text-align:center;">
+        <a class="btn-ghost" href="{{ url_for('public.index') }}">Volver al inicio</a>
+        <a class="btn-ghost" style="margin-left:0.5rem;" href="{{ url_for('public.portfolio') }}">Ver portfolio</a>
+    </div>
+</div>
+{% endblock %}

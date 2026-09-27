@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Presupuesto #{{ quote.id }} — Admin — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="admin-wrap" style="max-width:1000px;">
+    <div class="admin-head">
+        <div>
+            <h1 style="font-size:1.8rem;">Presupuesto #{{ quote.id }}
+                <span class="badge {{ quote.status }}" style="vertical-align:middle;">{{ quote.status }}</span>
+            </h1>
+            <p class="sub">
+                Enviado el {{ quote.created_at.strftime('%d/%m/%Y %H:%M') if quote.created_at else '—' }}
+            </p>
+        </div>
+        <div class="toolbar">
+            <a href="{{ url_for('admin.admin_quotes') }}">← Presupuestos</a>
+        </div>
+    </div>
+
+    <div class="admin-detail-grid">
+        <div>
+            <div class="detail-box">
+                <h2>Detalle</h2>
+                <dl class="detail-grid">
+                    <div><dt>Cliente</dt><dd>{{ quote.nombre }}</dd></div>
+                    <div><dt>Teléfono</dt><dd>{{ quote.telefono }}</dd></div>
+                    <div><dt>Email</dt><dd>{{ quote.email }}</dd></div>
+                    <div><dt>Enviado</dt><dd>{{ quote.created_at.strftime('%d/%m/%Y %H:%M') if quote.created_at else '—' }}</dd></div>
+                    <div><dt>Tamaño</dt><dd>{{ quote.size }}</dd></div>
+                    <div><dt>Zona</dt><dd>{{ quote.zone }}</dd></div>
+                    <div><dt>Estimado (calculado)</dt>
+                        <dd>{% if quote.estimated_price %}$ {{ '{:,.0f}'.format(quote.estimated_price) }}{% else %}—{% endif %}</dd></div>
+                    <div><dt>Rango sugerido</dt>
+                        <dd>$ {{ '{:,.0f}'.format((quote.estimated_price or 0) * 0.90) }} – $ {{ '{:,.0f}'.format((quote.estimated_price or 0) * 1.15) }}</dd></div>
+                    {% if quote.description %}
+                    <div class="full-width"><dt>Su idea</dt><dd>{{ quote.description }}</dd></div>
+                    {% endif %}
+                </dl>
+            </div>
+
+            {% if quote.images %}
+            <div class="detail-box">
+                <h2>Referencias ({{ quote.images|length }})</h2>
+                <div class="thumb-row">
+                    {% for img in quote.images %}
+                    <a href="{{ url_for('public.serve_upload', filename=img.filename) }}" target="_blank" rel="noopener" title="{{ img.original_filename }}">
+                        <img loading="lazy" style="width:130px;height:130px;object-fit:cover;"
+                             src="{{ url_for('public.serve_upload', filename=img.filename) }}"
+                             alt="{{ img.original_filename or 'Referencia' }}">
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if quote.reservas %}
+            <div class="detail-box">
+                <h2>Turnos vinculados</h2>
+                {% for r in quote.reservas %}
+                <p style="font-size:0.9rem;">
+                    Turno <a href="{{ url_for('admin.dashboard') }}#reserva-{{ r.id }}">#{{ r.id }}</a>
+                    — {{ r.fecha.strftime('%d/%m/%Y') }} {{ r.hora }}
+                    · <span class="badge {{ r.estado }}">{{ r.estado }}</span>
+                </p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="admin-quote-actions">
+            <div class="detail-box" style="margin:0;">
+                <h2>Estado</h2>
+                <form method="POST" action="{{ url_for('admin.quote_cambiar_estado', id=quote.id) }}">
+                    <input type="hidden" name="estado" value="aprobado">
+                    <button class="btn btn-ok btn-small" type="submit"
+                            {% if quote.status == 'aprobado' %}disabled{% endif %}
+                            style="width:100%;padding:0.6rem;{% if quote.status == 'aprobado' %}opacity:0.4;cursor:default;{% endif %}">Aprobar presupuesto</button>
+                </form>
+                <form method="POST" action="{{ url_for('admin.quote_cambiar_estado', id=quote.id) }}">
+                    <input type="hidden" name="estado" value="rechazado">
+                    <button class="btn btn-danger btn-small" type="submit"
+                            {% if quote.status == 'rechazado' %}disabled{% endif %}
+                            style="width:100%;padding:0.6rem;{% if quote.status == 'rechazado' %}opacity:0.4;cursor:default;{% endif %}">Rechazar</button>
+                </form>
+                <form method="POST" action="{{ url_for('admin.quote_cambiar_estado', id=quote.id) }}">
+                    <input type="hidden" name="estado" value="pendiente">
+                    <button class="btn-ghost btn-small" type="submit"
+                            style="width:100%;padding:0.6rem;text-align:center;">Volver a pendiente</button>
+                </form>
+            </div>
+
+            {% if client_wa %}
+            <a class="btn btn-small" style="text-align:center;padding:0.6rem;"
+               href="{{ client_wa }}" target="_blank" rel="noopener">Escribirle por WhatsApp</a>
+            {% endif %}
+
+            {% if quote.status == 'aprobado' %}
+            <a class="btn" style="text-align:center;"
+               href="{{ url_for('public.reservar', quote_id=quote.id) }}"
+               title="Abre el formulario público con sus datos precargados">Agendar turno →</a>
+            <p class="field-help" style="margin:0;font-size:0.72rem;text-align:center;">
+                El formulario se abre con los datos del cliente ya cargados.
+            </p>
+            {% elif quote.status == 'agendado' %}
+            <p class="field-help" style="margin:0;">
+                ✓ Ya existe un turno agendado con este presupuesto.
+            </p>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('admin.quote_delete', id=quote.id) }}"
+                  onsubmit="return confirm('¿Eliminar el presupuesto #{{ quote.id }} y sus imágenes?');">
+                <button class="btn btn-danger btn-small" type="submit"
+                        style="width:100%;padding:0.6rem;">Eliminar presupuesto</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

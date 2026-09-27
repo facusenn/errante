@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Precios del estimador — Admin — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="admin-wrap" style="max-width:900px;">
+    <div class="admin-head">
+        <div>
+            <h1 style="font-size:1.8rem;">Precios del estimador</h1>
+            <p class="sub">Se aplican al instante en el formulario público de presupuesto.</p>
+        </div>
+        <div class="toolbar">
+            <a href="{{ url_for('admin.dashboard') }}">← Panel</a>
+            <a href="{{ url_for('public.presupuesto') }}">Ver formulario público →</a>
+        </div>
+    </div>
+
+    <div class="field-help">
+        El estimado que ve el cliente es:
+        <strong>precio base del tamaño × multiplicador de la zona</strong>.
+        Si ese valor queda por debajo del <strong>mínimo de sesión</strong>, se aplica el mínimo.
+        El rango mostrado es −10% / +15% sobre ese total.
+    </div>
+
+    <form method="POST" action="{{ url_for('admin.admin_estimator') }}" class="est-config">
+        <input type="hidden" name="action" value="save">
+
+        {% for group_title, fields in groups %}
+        <div class="form-section">
+            <h2>{{ group_title }}</h2>
+            <div class="config-rows">
+                {% for key, label in fields %}
+                <div class="field">
+                    <label for="{{ key }}">{{ label }}</label>
+                    {% if key.startswith('zone_') %}
+                    <input type="number" id="{{ key }}" name="{{ key }}"
+                           value="{{ '%g'|format(config[key]) }}"
+                           min="0" max="10" step="0.05" required>
+                    {% else %}
+                    <input type="number" id="{{ key }}" name="{{ key }}"
+                           value="{{ '%g'|format(config[key]) }}"
+                           min="0" step="500" required>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="form-actions" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <button type="submit" class="btn">Guardar precios</button>
+        </div>
+    </form>
+
+    <div style="text-align:center;margin-top:2.5rem;">
+        <form method="POST" action="{{ url_for('admin.admin_estimator') }}"
+              onsubmit="return confirm('¿Restaurar todos los valores por defecto? Se pierden los precios personalizados.');">
+            <input type="hidden" name="action" value="restore">
+            <button type="submit" class="btn-ghost btn-small" style="padding:0.6rem 1.2rem;">
+                Restaurar valores por defecto</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

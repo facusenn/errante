@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Portfolio — Ink.Studio{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="pf-hero">
+    <p class="hero-eyebrow" style="font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--red);margin-bottom:1.5rem;">✦ Trabajos realizados</p>
+    <h1>Portfolio</h1>
+    <p>Cada tatuaje cuenta una historia. Estos son algunos de los nuestros.</p>
+</section>
+
+<div class="pf-filters">
+    <a href="{{ url_for('public.portfolio') }}"
+       class="{{ 'active' if not categoria_actual }}">Todos</a>
+    {% for cat in categorias %}
+    <a href="{{ url_for('public.portfolio', categoria=cat) }}"
+       class="{{ 'active' if categoria_actual == cat }}">{{ cat }}</a>
+    {% endfor %}
+</div>
+
+{% include 'partials/portfolio_grid.html' with context %}
+{% endblock %}

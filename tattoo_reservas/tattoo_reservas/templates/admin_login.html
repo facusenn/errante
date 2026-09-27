@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Panel admin — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+    <div class="login-card">
+        <h1>Panel admin</h1>
+        {% if not configured %}
+        <p class="sub">🔒 El panel está bloqueado porque no hay contraseña configurada.</p>
+        <p class="status-note" style="margin:0;">
+            Definí <strong style="color:var(--warm);">ADMIN_PASSWORD</strong> en tu archivo
+            <code>.env</code> y reiniciá la app para habilitar el acceso.
+        </p>
+        {% else %}
+        <p class="sub">Ingresá la contraseña del estudio para administrar
+           turnos, portfolio y presupuestos.</p>
+        <form method="POST" action="{{ url_for('admin.login') }}">
+            <div class="form-section">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password"
+                       autofocus autocomplete="current-password" required>
+                <div class="form-actions" style="margin-top:1.5rem;">
+                    <button type="submit" class="btn">Ingresar</button>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

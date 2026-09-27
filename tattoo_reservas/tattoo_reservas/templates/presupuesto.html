@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Presupuesto — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="form-wrap" style="max-width:900px;">
+    <h1 class="page-title">Presupuesto online</h1>
+    <p class="form-sub">Elegí tamaño y zona: el estimado se calcula al instante.
+       Lo envías y el tatuador lo revisa para darte el precio final.</p>
+
+    <div class="quote-layout">
+        <form method="POST" action="{{ url_for('public.presupuesto') }}" enctype="multipart/form-data">
+
+            <div class="form-section">
+                <h2><span class="step-num">01</span> Datos de contacto</h2>
+                <div class="form-grid-2">
+                    <div>
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="full-width">
+                        <label for="telefono">Teléfono (WhatsApp)</label>
+                        <input type="tel" id="telefono" name="telefono" required
+                               placeholder="+54 9 11 ...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><span class="step-num">02</span> Tamaño y zona</h2>
+                <div class="form-grid-2">
+                    <div>
+                        <label for="q-size">Tamaño</label>
+                        <select id="q-size" name="size" required>
+                            <option value="">Elegí un tamaño…</option>
+                            {% for key, label in size_options %}
+                            <option value="{{ key }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="q-zone">Zona del cuerpo</label>
+                        <select id="q-zone" name="zone" required>
+                            <option value="">Elegí la zona…</option>
+                            {% for label, key in zone_options %}
+                            <option value="{{ label }}" data-key="{{ key }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><span class="step-num">03</span> Contanos más (opcional)</h2>
+                <label for="description">Idea / detalles</label>
+                <textarea id="description" name="description"
+                          placeholder="Qué te imaginás, si tenés referencias, si es tu primer tatuaje…"></textarea>
+                <div style="margin-top:1.25rem;">
+                    <label for="fotos">Fotos de referencia</label>
+                    <input type="file" id="fotos" name="fotos" accept=".png,.jpg,.jpeg,.webp" multiple>
+                    <span class="form-hint">Hasta 3 imágenes (PNG, JPG o WebP). Ayudan a afinar el precio final.</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">Enviar presupuesto</button>
+            </div>
+        </form>
+
+        <aside class="quote-aside">
+            <div class="q-estimate-box">
+                <p class="q-estimate-label">Estimado orientativo</p>
+                <div id="q-estimate" class="q-estimate-value">
+                    <span class="q-placeholder">Elegí tamaño y zona para ver el estimado</span>
+                </div>
+                <p id="q-estimate-hint" class="q-estimate-hint"></p>
+                <p class="q-estimate-disclaimer">* El valor final se define con el tatuador según
+                   detalle del diseño, cobertura y sesiones necesarias.</p>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.QUOTE_JS_CONFIG = {{ quote_js_config|safe }};
+</script>
+<script src="{{ url_for('static', filename='js/quote.js') }}"></script>
+{% endblock %}

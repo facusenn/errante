@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Presupuestos — Admin — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="admin-wrap" style="max-width:1000px;">
+    <div class="admin-head">
+        <div>
+            <h1 style="font-size:1.8rem;">Presupuestos</h1>
+            <p class="sub">Solicitudes enviadas desde la web. Revisá, aprobá o rechazá.</p>
+        </div>
+        <div class="toolbar">
+            <a href="{{ url_for('admin.dashboard') }}">← Panel</a>
+            <a href="{{ url_for('admin.admin_estimator') }}">Precios</a>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="num">{{ stats.total }}</div><div class="lbl">Total</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--warn);">{{ stats.pendientes }}</div><div class="lbl">Pendientes</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--ok);">{{ stats.aprobadas }}</div><div class="lbl">Aprobados</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--warm);">{{ stats.agendadas }}</div><div class="lbl">Agendados</div></div>
+    </div>
+
+    <div class="filter-pills">
+        {% for estado in ['todos', 'pendiente', 'aprobado', 'agendado', 'rechazado'] %}
+        <a href="{{ url_for('admin.admin_quotes') if estado == 'todos' else url_for('admin.admin_quotes', estado=estado) }}"
+           class="{{ 'active' if estado_filtro == estado }}">{{ estado|capitalize }}</a>
+        {% endfor %}
+    </div>
+
+    {% if quotes %}
+    <div class="q-cards-grid">
+        {% for quote in quotes %}
+            {% include 'partials/quote_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="table-empty" style="border:1px solid var(--line);border-radius:var(--radius);">
+        Todavía no hay presupuestos con este filtro.</p>
+    {% endif %}
+</div>
+{% endblock %}

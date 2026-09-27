@@ -1,0 +1,22 @@
+{# Grilla de portfolio: recibe `fotos` (lista de PortfolioImage) #}
+{% if fotos %}
+<div class="pf-grid">
+    {% for foto in fotos %}
+    <figure class="pf-item">
+        <a href="{{ url_for('public.serve_upload', filename=foto.filename) }}" target="_blank" rel="noopener">
+            <img loading="lazy"
+                 src="{{ url_for('public.serve_upload', filename=foto.thumb_filename) }}"
+                 alt="{{ foto.alt_text or foto.title or 'Tatuaje' }}">
+        </a>
+        <figcaption>
+            {% if foto.title %}<strong>{{ foto.title }}</strong>{% endif %}
+            {% if foto.category %}<span>{{ foto.category }}</span>{% endif %}
+        </figcaption>
+    </figure>
+    {% endfor %}
+</div>
+{% else %}
+<div class="pf-empty">
+    <p>No hay fotos todavía. El portfolio se llena desde el panel admin.</p>
+</div>
+{% endif %}

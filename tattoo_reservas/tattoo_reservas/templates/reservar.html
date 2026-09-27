@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Reservar turno — Ink.Studio{% endblock %}
+
+{% block content %}
+<div class="form-wrap">
+    <h1 class="page-title">Reservar tu turno</h1>
+    <p class="form-sub">
+        {% if quote %}
+            Tu presupuesto <strong>#{{ quote.id }}</strong> ya está aprobado — completá fecha y hora.
+        {% else %}
+            Completá el formulario y te confirmamos por WhatsApp.
+        {% endif %}
+    </p>
+
+    {% if quote %}
+    <div class="quote-banner">
+        <span>
+            <strong>Presupuesto #{{ quote.id }} vinculado</strong> ·
+            {{ quote.zone }} ·
+            {% if quote.estimated_price %}Estimado ≈ $ {{ '{:,.0f}'.format(quote.estimated_price) }}{% endif %}
+        </span>
+        <span class="badge {{ quote.status }}">{{ quote.status }}</span>
+    </div>
+    {% endif %}
+
+    <form method="POST"
+          action="{{ url_for('public.reservar', quote_id=quote.id) if quote else url_for('public.reservar') }}"
+          enctype="multipart/form-data">
+
+        <div class="form-section">
+            <h2><span class="step-num">01</span> Datos de contacto</h2>
+            <div class="form-grid-2">
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required
+                           value="{{ prefill.get('nombre', '') }}">
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required
+                           value="{{ prefill.get('email', '') }}">
+                </div>
+                <div class="full-width">
+                    <label for="telefono">Teléfono (WhatsApp)</label>
+                    <input type="tel" id="telefono" name="telefono" required
+                           placeholder="+54 9 11 ..." value="{{ prefill.get('telefono', '') }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2><span class="step-num">02</span> El turno</h2>
+            <div class="form-grid-3">
+                <div>
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+                <div>
+                    <label for="hora">Horario</label>
+                    <select id="hora" name="hora" required>
+                        <option value="">Elegí un horario…</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="estilo">Estilo</label>
+                    <select id="estilo" name="estilo" required>
+                        <option value="">Elegí un estilo…</option>
+                        <option value="Blackwork">Blackwork</option>
+                        <option value="Realismo">Realismo</option>
+                        <option value="Fine Line">Fine Line</option>
+                        <option value="Tradicional">Tradicional</option>
+                        <option value="Geométrico">Geométrico</option>
+                        <option value="Lettering">Lettering</option>
+                        <option value="Japonés">Japonés</option>
+                        <option value="Otro">Otro / Todavía no lo sé</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="zona">Zona del cuerpo</label>
+                    <select id="zona" name="zona" required>
+                        <option value="">Elegí la zona…</option>
+                        <option value="Brazo" {% if quote and quote.zone == 'Brazo' %}selected{% endif %}>Brazo</option>
+                        <option value="Antebrazo" {% if quote and quote.zone == 'Antebrazo' %}selected{% endif %}>Antebrazo</option>
+                        <option value="Mano" {% if quote and quote.zone == 'Mano' %}selected{% endif %}>Mano</option>
+                        <option value="Pecho" {% if quote and quote.zone == 'Pecho' %}selected{% endif %}>Pecho</option>
+                        <option value="Espalda" {% if quote and quote.zone == 'Espalda' %}selected{% endif %}>Espalda</option>
+                        <option value="Costilla" {% if quote and quote.zone == 'Costilla' %}selected{% endif %}>Costilla</option>
+                        <option value="Pierna" {% if quote and quote.zone == 'Pierna' %}selected{% endif %}>Pierna</option>
+                        <option value="Tobillo / Pie" {% if quote and quote.zone == 'Tobillo / Pie' %}selected{% endif %}>Tobillo / Pie</option>
+                        <option value="Cuello" {% if quote and quote.zone == 'Cuello' %}selected{% endif %}>Cuello</option>
+                        <option value="Otro" {% if quote and quote.zone == 'Otro' %}selected{% endif %}>Otro</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tamano">Tamaño</label>
+                    <select id="tamano" name="tamano" required>
+                        <option value="">Elegí el tamaño…</option>
+                        <option value="Chico (hasta 5 cm)" {% if quote and quote.size == 'chico' %}selected{% endif %}>Chico (hasta 5 cm)</option>
+                        <option value="Mediano (5–15 cm)" {% if quote and quote.size == 'mediano' %}selected{% endif %}>Mediano (5–15 cm)</option>
+                        <option value="Grande (15–25 cm)" {% if quote and quote.size == 'grande' %}selected{% endif %}>Grande (15–25 cm)</option>
+                        <option value="Extra grande (25+ cm)" {% if quote and quote.size == 'xl' %}selected{% endif %}>Extra grande (25+ cm)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2><span class="step-num">03</span> Contanos tu idea</h2>
+            <label for="descripcion">Descripción del tatuaje</label>
+            <textarea id="descripcion" name="descripcion"
+                      placeholder="¿Qué te imaginás? Referencias, significado, detalles…">{{ prefill.get('descripcion', '') }}</textarea>
+            <div class="checkbox-row">
+                <input type="checkbox" id="es_primera_vez" name="es_primera_vez">
+                <label for="es_primera_vez" style="margin:0;">Es mi primer tatuaje</label>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn">Enviar reserva</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

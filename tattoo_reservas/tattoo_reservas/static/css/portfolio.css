@@ -1,0 +1,143 @@
+/* Portfolio — grilla responsive con lazy loading */
+.pf-hero {
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+}
+
+.pf-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.pf-hero p { color: var(--muted); }
+
+.pf-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem auto 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 1rem;
+}
+
+.pf-filters a {
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid #333;
+    color: var(--muted);
+    transition: all 0.2s;
+}
+
+.pf-filters a:hover, .pf-filters a.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+}
+
+.pf-grid {
+    columns: 3;
+    column-gap: 1rem;
+    padding: 0 2rem 4rem;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.pf-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.pf-item a { display: block; }
+
+.pf-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.pf-item:hover img {
+    transform: scale(1.03);
+    opacity: 0.9;
+}
+
+.pf-item figcaption {
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.pf-item figcaption strong {
+    color: var(--cream);
+    font-weight: 500;
+    display: block;
+}
+
+.pf-empty {
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--muted);
+}
+
+@media (max-width: 980px) {
+    .pf-grid { columns: 2; }
+}
+
+@media (max-width: 560px) {
+    .pf-grid { columns: 1; padding: 0 1.25rem 3rem; }
+}
+
+/* Mini-grilla de destacados en la landing */
+.home-portfolio {
+    padding: 4rem 2rem;
+    border-top: 1px solid #222;
+}
+
+.home-portfolio h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 0.4rem;
+}
+
+.home-portfolio > p {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+}
+
+.home-portfolio .pf-grid {
+    columns: 3;
+    padding: 0;
+}
+
+.home-portfolio .more {
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--red);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.home-portfolio .more:hover { color: var(--cream); }
+
+@media (max-width: 980px) {
+    .home-portfolio .pf-grid { columns: 3; }
+}
+
+@media (max-width: 560px) {
+    .home-portfolio .pf-grid { columns: 2; }
+}

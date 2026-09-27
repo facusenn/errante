@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    container_name: ink_studio
+    ports:
+      - "5000:8000"
+    env_file:
+      - path: .env
+        required: false   # sin .env la app arranca igual (admin bloqueado hasta setear ADMIN_PASSWORD)
+    volumes:
+      - ./instance:/app/instance   # base SQLite
+      - ./uploads:/app/uploads    # imágenes de portfolio y presupuestos
+    restart: unless-stopped
