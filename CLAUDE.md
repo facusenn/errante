@@ -1,31 +1,46 @@
-## gstack (REQUIRED — global install)
+# CLAUDE.md
 
-**Before doing ANY work, verify gstack is installed:**
+## gstack
 
-```bash
-_GS=""
-for _D in "${GSTACK_ROOT:-}" "$HOME/.claude/skills/gstack" "$HOME/.codex/skills/gstack" "$HOME/.factory/skills/gstack" "$HOME/.kiro/skills/gstack" "$HOME/.config/opencode/skills/gstack" "$HOME/.slate/skills/gstack" "$HOME/.cursor/skills/gstack" "$HOME/.openclaw/skills/gstack" "$HOME/.hermes/skills/gstack" "$HOME/.gbrain/skills/gstack" "$HOME/.gstack/repos/gstack"; do
-  [ -z "$_GS" ] && [ -n "$_D" ] && [ -d "$_D/bin" ] && _GS="$_D"
-done
-[ -n "$_GS" ] && echo "GSTACK_OK: $_GS" || echo "GSTACK_MISSING"
-```
+Use `/browse` skill from gstack for all web browsing needs. Never use `mcp__claude-in-chrome__*` tools.
 
-If GSTACK_MISSING: STOP. Do not proceed. Tell the user:
+### Available Skills
 
-> gstack is required for all AI-assisted work in this repo.
-> Install it:
-> ```bash
-> git clone --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack
-> cd ~/.claude/skills/gstack && ./setup --team
-> ```
-> Then restart your AI coding tool.
-
-Do not skip skills, ignore gstack errors, or work around missing gstack.
-
-Using gstack skills: After install, skills like /qa, /ship, /review, /investigate,
-and /browse are available. Use /browse for all web browsing (Aside first, the bundled gstack browser as fallback).
-Use the resolved install path above for gstack file paths
-(default: ~/.claude/skills/gstack).
+* `/office-hours` - Schedule and manage office hours
+* `/plan-ceo-review` - Plan and execute CEO-level reviews
+* `/plan-eng-review` - Plan and execute engineering reviews
+* `/plan-design-review` - Plan and execute design reviews
+* `/design-consultation` - Provide design guidance and consultations
+* `/design-shotgun` - Execute rapid design iterations
+* `/design-html` - Create HTML-based design assets
+* `/review` - Review code and documentation
+* `/ship` - Manage shipping processes
+* `/land-and-deploy` - Deploy and land products
+* `/canary` - Run canary testing
+* `/benchmark` - Run performance benchmarks
+* `/browse` - Browse web pages (gstack's primary browser skill)
+* `/connect-chrome` - Connect to Chrome browser
+* `/qa` - Quality assurance testing
+* `/qa-only` - QA-specific testing only
+* `/design-review` - Design specific reviews
+* `/setup-browser-cookies` - Configure browser cookies
+* `/setup-deploy` - Setup deployment configuration
+* `/setup-gbrain` - Setup GBrain configuration
+* `/retro` - Run retrospectives
+* `/investigate` - Investigate issues and problems
+* `/document-release` - Document releases
+* `/document-generate` - Generate documentation
+* `/codex` - Code documentation and knowledge base
+* `/cso` - Chief Strategy Office functions
+* `/autoplan` - Automated planning
+* `/plan-devex-review` - Developer experience review planning
+* `/devex-review` - Developer experience reviews
+* `/careful` - Careful operation mode
+* `/freeze` - Freeze operations
+* `/guard` - Security/guard mode
+* `/unfreeze` - Unfreeze operations
+* `/gstack-upgrade` - GStack upgrades
+* `/learn` - Learning and training functions
 
 ## Skill routing
 
@@ -40,9 +55,8 @@ Key routing rules:
 - Bugs/errors → invoke /investigate
 - QA/testing site behavior → invoke /qa or /qa-only
 - Code review/diff check → invoke /review
-- Visual polish → invoke /design-review
-- Ship/deploy/PR → invoke /ship or /land-and-deploy
-- Save progress → invoke /context-save
-- Resume context → invoke /context-restore
-- Author a backlog-ready spec/issue → invoke /spec
-
+* Visual polish → invoke /design-review
+* Ship/deploy/PR → invoke /ship or /land-and-deploy
+* Save progress → invoke /context-save
+* Resume context → invoke /context-restore
+* Author a backlog-ready spec/issue → invoke /spec

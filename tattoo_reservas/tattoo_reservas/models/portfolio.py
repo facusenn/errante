@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from database import db
+from .base import BaseModel
 
 
-class PortfolioImage(db.Model):
+class PortfolioImage(BaseModel):
     """Foto de un tatuaje realizado, para la galería pública."""
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(300), nullable=False, unique=True)

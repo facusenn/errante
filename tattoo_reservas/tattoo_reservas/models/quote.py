@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from database import db
+from .base import BaseModel
 
 
-class QuoteRequest(db.Model):
+class QuoteRequest(BaseModel):
     """Solicitud de presupuesto enviada desde la web."""
     __tablename__ = 'quote_request'
     id = db.Column(db.Integer, primary_key=True)
@@ -21,7 +20,7 @@ class QuoteRequest(db.Model):
         return f'<QuoteRequest {self.id} - {self.nombre}>'
 
 
-class QuoteImage(db.Model):
+class QuoteImage(BaseModel):
     """Foto de referencia adjunta a un presupuesto."""
     __tablename__ = 'quote_image'
     id = db.Column(db.Integer, primary_key=True)

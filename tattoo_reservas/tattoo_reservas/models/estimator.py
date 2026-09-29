@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from database import db
+from .base import BaseModel
 
 
-class EstimatorConfig(db.Model):
+class EstimatorConfig(BaseModel):
     """Configuración del presupuestador editable desde el panel.
 
     Cada fila es una regla (clave/valor). El valor se guarda como JSON,

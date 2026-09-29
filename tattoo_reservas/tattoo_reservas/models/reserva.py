@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from database import db
+from .base import BaseModel
 
 
-class Reserva(db.Model):
+class Reserva(BaseModel):
     """Turno reservado por un cliente."""
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
